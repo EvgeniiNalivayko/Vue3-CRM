@@ -3,7 +3,7 @@
 </template>
 
 <script setup>
-// Код для компонента
+
 </script>
 
 <style scoped>
