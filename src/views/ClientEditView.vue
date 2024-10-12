@@ -2,6 +2,7 @@
   <div>
     <h2>Edit Client</h2>
     <client-form />
+
   </div>
 </template>
 

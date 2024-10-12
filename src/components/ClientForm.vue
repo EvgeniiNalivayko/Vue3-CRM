@@ -1,51 +1,49 @@
 <template>
-  <form @submit.prevent="handleSubmit">
-    <div>
-      <label for="name">Name</label>
-      <input type="text" id="name" v-model="form.name" required />
-    </div>
-    <div>
-      <label for="email">Email</label>
-      <input type="email" id="email" v-model="form.email" required />
-    </div>
-    <button type="submit">Submit</button>
-  </form>
+  <div>
+    <h3>{{ isEditing ? 'Edit Client' : 'Add New Client' }}</h3>
+    <form @submit.prevent="handleSubmit">
+      <input v-model="form.name" placeholder="Name" required />
+      <input v-model="form.email" placeholder="Email" type="email" required />
+      <select v-model="form.category">
+        <option v-for="category in clientStore.categories" :key="category" :value="category">
+          {{ category }}
+        </option>
+      </select>
+      <button type="submit">{{ isEditing ? 'Save Changes' : 'Add Client' }}</button>
+
+      <button type="button" @click="handleCancel">Cancel</button>
+    </form>
+  </div>
 </template>
 
 <script setup>
-import { reactive } from 'vue';
+import {defineEmits } from 'vue';
+import {useClientStore} from "@/stores/clientStore.js";
 
-const form = reactive({
-  name: '',
-  email: '',
-});
+const clientStore = useClientStore()
+
+const form = defineModel({ default: {
+    name: '',
+    email: '',
+    category: null,
+  } })
+
+
+const emits = defineEmits(['submit', 'cancel']);
+const isEditing = true
+
 
 function handleSubmit() {
-  // Обработка данных формы; здесь можно задействовать store
-  console.log(form);
+  emits('submit');
+}
+
+function handleCancel() {
+  emits('cancel');
 }
 </script>
 
 <style scoped>
 form {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-label {
-  font-weight: 600;
-}
-
-button {
-  padding: 0.5rem 1rem;
-  background-color: #28a745;
-  color: white;
-  border: none;
-  cursor: pointer;
-}
-
-button:hover {
-  background-color: #218838;
+  margin-bottom: 1rem;
 }
 </style>

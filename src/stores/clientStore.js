@@ -10,11 +10,12 @@ export const useClientStore = defineStore('client', {
         searchQuery: '',
     }),
     actions: {
+
         addClient(client) {
             client.id = Date.now();
-            this.clients.push(client);
+            this.clients.unshift(client);
             this.saveClientsToLocalStorage();
-            this.pushClientToServer(client); // Симуляция отправки на сервер
+            this.pushClientToServer(client);
         },
         editClient(id, updatedClient) {
             const clientIndex = this.clients.findIndex(client => client.id === id);
@@ -34,7 +35,7 @@ export const useClientStore = defineStore('client', {
             this.searchQuery = query;
         },
         saveClientsToLocalStorage() {
-            localStorage.setItem('clients', JSON.stringify(this.clients));
+            // localStorage.setItem('clients', JSON.stringify(this.clients));
         },
         async fetchClientsFromServer() {
             try {
@@ -53,6 +54,7 @@ export const useClientStore = defineStore('client', {
             }
         }
     },
+
     getters: {
         filteredClients: (state) => {
             return state.clients.filter(client => {

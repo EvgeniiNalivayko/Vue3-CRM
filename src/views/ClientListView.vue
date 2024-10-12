@@ -1,51 +1,23 @@
 <template>
   <div>
-    <h2>Client List</h2>
-    <form @submit.prevent="addNewClient">
-      <input v-model="newClient.name" placeholder="Name" required />
-      <input v-model="newClient.email" placeholder="Email" type="email" required />
-      <select v-model="newClient.category">
-        <option v-for="category in categories" :key="category" :value="category">
-          {{ category }}
-        </option>
-      </select>
-      <button type="submit">Add Client</button>
-    </form>
-
-    <ul>
-      <li v-for="client in clients" :key="client.id">
-        {{ client.name }} - {{ client.email }} - {{ client.category }}
-        <button @click="edit(client)">Edit</button>
-        <button @click="deleteClient(client.id)">Delete</button>
-      </li>
-    </ul>
-
-    <!-- Simple Client Edit Form -->
-    <div v-if="editingClient">
-      <h3>Edit Client</h3>
-      <input v-model="editingClient.name" placeholder="Name" required />
-      <input v-model="editingClient.email" placeholder="Email" type="email" required />
-      <select v-model="editingClient.category">
-        <option v-for="category in categories" :key="category" :value="category">
-          {{ category }}
-        </option>
-      </select>
-      <button @click="saveEdit">Save Changes</button>
-      <button @click="cancelEdit">Cancel</button>
-    </div>
+    <ClientForm v-model="newClient" @submit="addNewClient"/>
+    <ClientTable :clients="store.clients" :edit="edit" :deleteClient="deleteClient" />
+    <ClientForm v-model="editingClient" @submit="saveEdit"/>
   </div>
 </template>
 
 <script setup>
-import {ref} from 'vue';
+import {ref, computed} from 'vue';
 import {useClientStore} from '@/stores/clientStore';
+import ClientTable from '@/components/ClientTable.vue';
+import ClientForm from "@/components/ClientForm.vue";
 
 const store = useClientStore();
-const clients = ref(store.clients);
-const categories = ref(store.categories);
+const categories = computed(() => store.categories);
 
 const newClient = ref({name: '', email: '', category: categories.value[0]});
-const editingClient = ref(null);
+const editingClient = ref({name: '', email: '', category: categories.value[0]});
+
 
 function addNewClient() {
   store.addClient({...newClient.value});
@@ -57,8 +29,10 @@ function edit(client) {
 }
 
 function saveEdit() {
-  store.editClient(editingClient.value.id, editingClient.value);
-  editingClient.value = null;
+  if (editingClient.value) {
+    store.editClient(editingClient.value.id, editingClient.value);
+    editingClient.value = {name: '', email: '', category: categories.value[0]};
+  }
 }
 
 function cancelEdit() {
