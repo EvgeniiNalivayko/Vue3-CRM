@@ -1,7 +1,7 @@
 <template>
   <div>
     <ClientForm v-model="newClient" @submit="addNewClient"/>
-    <ClientTable :clients="store.clients" :edit="edit" :deleteClient="deleteClient" />
+    <UiTable :items="store.clients" @edit="editClient" @delete="deleteClient"/>
     <ClientForm v-model="editingClient" @submit="saveEdit"/>
   </div>
 </template>
@@ -9,7 +9,7 @@
 <script setup>
 import {ref, computed} from 'vue';
 import {useClientStore} from '@/stores/clientStore';
-import ClientTable from '@/components/ClientTable.vue';
+import UiTable from '@/components/UI/UiTable.vue';
 import ClientForm from "@/components/ClientForm.vue";
 
 const store = useClientStore();
@@ -24,7 +24,7 @@ function addNewClient() {
   newClient.value = {name: '', email: '', category: categories.value[0]};
 }
 
-function edit(client) {
+function editClient(client) {
   editingClient.value = {...client};
 }
 

@@ -9,13 +9,13 @@
       </tr>
       </thead>
       <tbody>
-      <tr v-for="client in clients" :key="client.id" class="bg-white border-b">
-        <td class="px-6 py-4">{{ client.name }}</td>
-        <td class="px-6 py-4">{{ client.email }}</td>
-        <td class="px-6 py-4">{{ client.category }}</td>
+      <tr v-for=" item in items" :key="item.id" class="bg-white border-b">
+        <td class="px-6 py-4">{{ item.name }}</td>
+        <td class="px-6 py-4">{{ item.email }}</td>
+        <td class="px-6 py-4">{{ item.category }}</td>
         <td class="px-6 py-4">
-          <button @click="edit(client)" class="btn-edit">Edit</button>
-          <button @click="deleteClient(client.id)" class="btn-delete">Delete</button>
+          <button @click="emit('edit',item)" class="btn-edit">Edit</button>
+          <button @click="emit('delete',item.id)" class="btn-delete">Delete</button>
         </td>
       </tr>
       </tbody>
@@ -26,11 +26,15 @@
 <script setup>
 import {defineProps} from 'vue';
 
-const {clients , edit , deleteClient} = defineProps({
-  clients: Array,
-  edit: Function,
-  deleteClient: Function,
+const {items} = defineProps({
+  items: {
+    type: Array,
+    default: [],
+    required: true
+  }
 });
+
+const emit = defineEmits(['edit','delete']);
 </script>
 
 <style scoped>
